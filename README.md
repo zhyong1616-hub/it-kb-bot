@@ -153,7 +153,7 @@ schtasks /Create /TN "IT_KB_Bot" /TR "\"C:\完整路径\机器人服务\run_serv
 KB_UPDATE_URL=http://你的公网地址/kb/latest.zip
 
 # ② Git 仓库（进阶）
-KB_UPDATE_GIT=https://gitee.com/你/it-kb-bot.git
+KB_UPDATE_GIT=https://github.com/zhyong1616-hub/it-kb-bot.git
 KB_UPDATE_GIT_BRANCH=main
 
 # ③ 本地目录（默认，取目录里最新的 .zip）
@@ -172,10 +172,10 @@ KB_UPDATE_DIR=F:\KIDE_BOT_update
 #### 方式三：**全自动升级（零操作）** ⭐ 最省事
 
 配好**公网 Git 公开仓库**后，机器人**每 10 分钟自动检查**，有新版本就**自动拉取并重启** ——
-**你什么都不用做**：
+**你什么都不用做**。你的仓库已建好并已推送首版，直接照抄即可：
 
 ```ini
-KB_UPDATE_GIT=https://gitee.com/你/it-kb-bot.git
+KB_UPDATE_GIT=https://github.com/zhyong1616-hub/it-kb-bot.git
 KB_UPDATE_GIT_BRANCH=main
 KB_AUTO_UPDATE=1
 KB_AUTO_UPDATE_INTERVAL=10
@@ -185,8 +185,7 @@ KB_AUTO_UPDATE_INTERVAL=10
 并给你发一条企微通知「✅ 自动升级完成：1.0.1 → 1.0.2」。
 
 > ⚠️ 同样**依赖「开机自启」**（自动重启靠它）。
-> 搭建步骤见 **`09_零操作自动升级_搭建指南.md`**。
-> 不想公开代码？那用 Git 私有仓库 + 部署公钥（文档里有）。
+> 搭建步骤见交付目录的 **`10_公开仓库搭建与首推_操作指引.md`**。
 
 **三种升级方式对比**：
 

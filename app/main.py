@@ -18,7 +18,7 @@ import re
 
 from .kb_engine import KBEngine, MAINTAINER_ID, MAINTAINER_NAME, LEARN_REMIND_AT
 from .wecom_bot import WeComBot
-from .commands import dispatch, HELP_TEXT, PENDING_UPDATE
+from .commands import dispatch, HELP_TEXT, PENDING_UPDATE, _normalize_cmd
 from . import self_update as UPD
 from .cards import (build_approval_card, build_result_card, parse_decision_key,
                     build_welcome_card, build_answer_card, parse_question_key)
@@ -151,6 +151,7 @@ async def on_message(userid, content, ctx):
     """所有消息的总入口"""
     text = (content or '').strip()
     text = re.sub(r'^@\S+\s*', '', text).strip()   # 去掉群聊 @机器人 前缀
+    text = _normalize_cmd(text)                    # 全角／？：等 -> 半角，统一指令识别
     if not text:
         return None
 
@@ -161,7 +162,7 @@ async def on_message(userid, content, ctx):
     ENGINE.reload_if_changed()
 
     # 手动刷新（钟勇）：强制重新加载，改完文件不想等下次问答时用
-    if text in ('/reload', '／reload', '重载', '刷新知识库') and userid == MAINTAINER_ID:
+    if text in ('/reload', '重载', '刷新知识库') and userid == MAINTAINER_ID:
         ENGINE.load(force=True)
         return f'✅ 已重新加载知识库，当前共 {len(ENGINE.items)} 条。'
 

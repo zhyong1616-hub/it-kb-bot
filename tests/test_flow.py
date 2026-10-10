@@ -1103,6 +1103,39 @@ async def main():
     await _one_round()
     check('开关关闭时不会自动升级', got['n'] == 0)
 
+    # ================= 36. 全角指令归一化（员工手机打字常打全角／）=================
+    print('\n=== 36. 全角符号指令归一化 ===')
+
+    # 全角斜杠的核心指令：必须命中，不能落到问答兜底
+    for cmd in ['／learn', '／help', '／tree', '／version', '／list', '／pending', '／stats']:
+        r = C.dispatch(E, 'ZhongYong', cmd)
+        check(f'全角 {cmd} 能识别为指令', bool(r))
+
+    # 全角 + 全角空格
+    r = C.dispatch(E, 'ZhongYong', '／learn　')
+    check('全角斜杠 + 全角空格也能识别', bool(r))
+
+    # 全角斜杠后带参数
+    r = C.dispatch(E, 'ZhongYong', '／learn 1')
+    check('全角 ／learn 带参数能进入补答案流程',
+          bool(r) and ('标准答案' in r or '答案' in r or '编号' in r or '清单' in r))
+
+    # 员工发全角指令 -> 权限提示，而不是"没有找到答案"
+    r = C.dispatch(E, 'zhangsan', '／learn')
+    check('员工发全角 ／learn 得到权限提示（非误导性兜底）',
+          bool(r) and '权限' in r and '没有找到对应的答案' not in r)
+
+    # 归一化函数本身
+    check('全角斜杠被转成半角', C._normalize_cmd('／learn') == '/learn')
+    check('全角空格被转成半角', C._normalize_cmd('a　b') == 'a b')
+    check('中文内容不受影响（只转符号）',
+          C._normalize_cmd('／add 浩辰CAD怎么激活') == '/add 浩辰CAD怎么激活')
+    check('空串安全', C._normalize_cmd('') == '')
+
+    # 半角原样保留（不能被改坏）
+    r = C.dispatch(E, 'ZhongYong', '/learn')
+    check('半角 /learn 依然正常', bool(r))
+
     # ★ 收尾：确认真实源码全程未被污染，并复位环境
     check('真实源码未被污染（升级测试已隔离）',
           'class KBEngine' in open(os.path.join(BASE, 'app', 'kb_engine.py')).read()

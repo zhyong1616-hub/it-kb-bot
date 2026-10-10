@@ -233,9 +233,34 @@ def _looks_like_admin_cmd(t):
     return False
 
 
+# 全角 -> 半角 映射（只处理指令里可能出现的符号，不动中文内容）
+_FW2HW = {
+    0x3000: ' ',   # 全角空格
+    0xFF0F: '/',   # ／ 全角斜杠
+    0xFF0D: '-',   # － 全角连字符
+    0xFF1F: '?',   # ？ 全角问号
+    0xFF1A: ':',   # ： 全角冒号
+    0xFF03: '#',   # ＃ 全角井号
+}
+
+
+def _normalize_cmd(s):
+    """把指令里常见的全角符号统一成半角。
+
+    员工用手机/不同输入法时，很容易打出全角「／」。例如发「／learn」，
+    若不归一化会被当成普通问题，走到知识库问答里答"没有找到对应的答案"。
+    这里在入口统一转换，一处生效、所有指令受益。
+
+    只转换符号，中文字符完全不动。
+    """
+    if not s:
+        return s
+    return s.translate(_FW2HW)
+
+
 def dispatch(engine, userid, text):
     """返回 str 表示已处理；返回 None 表示交给知识库问答"""
-    t = text.strip()
+    t = _normalize_cmd(text.strip())
 
     # ---------- 通用：问候 / 身份声明 ----------
     ident = _identity_reply(userid, t)
@@ -243,17 +268,17 @@ def dispatch(engine, userid, text):
         return ident
 
     # ---------- 通用：目录树（所有人可看）----------
-    if t in ('/tree', '／tree', '/目录', '目录', '目录树', '/tree树'):
+    if t in ('/tree', '/目录', '目录', '目录树', '/tree树'):
         return _tree_text(engine)
     if t.startswith('/tree ') or t.startswith('目录 '):
         arg = t.replace('/tree', '', 1).replace('目录', '', 1).strip()
         return _tree_dir_text(engine, arg)
 
-    if t in ('/help', '／help', '帮助', '怎么用', '我是谁', '/whoami'):
+    if t in ('/help', '帮助', '怎么用', '我是谁', '/whoami'):
         me = f'{MAINTAINER_NAME}（{MAINTAINER_ID}）' if _is_maintainer(userid) \
             else (f'目录负责人（{userid}）' if engine.dirs_of_user(userid) else f'员工（{userid}）')
         return f'你的企业微信身份：{me}\n\n{HELP_TEXT.strip()}'
-    if t in ('/version', '／version', '版本', '版本号'):
+    if t in ('/version', '版本', '版本号'):
         return f'🤖 IT 知识库机器人\n{version_text(engine)}'
     if t in ('人工', f'找{MAINTAINER_NAME}', '转人工', '找IT', '技术支持'):
         return f'已为您转接 {MAINTAINER_NAME}，请稍候。您也可以先描述具体问题，我会尽力解答。'
