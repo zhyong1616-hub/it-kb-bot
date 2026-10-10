@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+data/pending.json
+data/audit.json
+logs/*.log

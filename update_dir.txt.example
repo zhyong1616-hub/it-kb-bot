@@ -1,0 +1,18 @@
+REM  ============================================================
+REM  OPTIONAL.  You normally do NOT need this file.
+REM
+REM  The one-click updater (更新.bat / update.bat) already has a
+REM  built-in drop folder:
+REM
+REM      F:\KIDE_BOT_update
+REM
+REM  Only create "update_dir.txt" (drop the ".example") if you want
+REM  the drop folder somewhere ELSE than the line above.
+REM
+REM  If you do, put ONE path on the FIRST line, e.g.
+REM
+REM      D:\my-updates
+REM
+REM  Lines starting with REM or # are ignored.
+REM  Save as ANSI or UTF-8 (no BOM).  Do NOT add quotes.
+REM  ============================================================

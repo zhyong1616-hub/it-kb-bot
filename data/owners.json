@@ -1,0 +1,22 @@
+{
+  "_说明": "目录负责人配置。key=目录路径（用 / 分隔，支持 一级 / 一级/二级 / 一级/二级/三级），value=负责人的企业微信 userid。",
+  "_优先级": "越具体的路径优先级越高；三级 > 二级 > 一级。钟勇(ZhongYong)天然拥有全部目录的最高权限。",
+  "_示例": {
+    "软件": "某人userid",
+    "软件/浩辰CAD许可配置": "某人userid",
+    "软件/浩辰CAD许可配置/激活授权": "某人userid"
+  },
+  "owners": {
+    "软件/浩辰CAD许可配置": "ZhongYong",
+    "软件/AutoCAD与Revit": "ZhongYong",
+    "软件/SketchUp": "ZhongYong",
+    "软件/火绒安全软件": "ZhongYong",
+    "软件/软件通用问题": "ZhongYong",
+    "ERP/ERP登录权限": "ZhongYong",
+    "ERP/ERP项目管理": "ZhongYong",
+    "ERP/ERP查询导出": "ZhongYong",
+    "电脑故障/系统故障": "ZhongYong",
+    "电脑故障/外设网络": "ZhongYong",
+    "电脑故障/常用软件报障": "ZhongYong"
+  }
+}
